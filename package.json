@@ -18,5 +18,8 @@
   "homepage": "https://github.com/marisela-gutierrez/team-profile-generator#readme",
   "devDependencies": {
     "jest": "^27.0.1"
+  },
+  "dependencies": {
+    "inquirer": "^8.1.0"
   }
 }
