@@ -1,8 +1,10 @@
 const inquirer = require('inquirer');
-const Employee = require('./Employee')
-const Engineer = require('../lib/Engineer');
-const Intern = require('../lib/intern');
-const Manager = require('../lib/Manager');
+const Engineer = require('./lib/Engineer');
+const Intern = require('./lib/intern');
+const Manager = require('./lib/Manager');
+const fs = require("fs");
+const generatePage = require("./src/page-template");
+let team = [];
 
 const isEngineer = (action) => {
   if(action === 'add an engineer'){
@@ -22,7 +24,6 @@ function Team() {
   this.manager;
   this.engineer;
   this.intern;
-  this.menu = true;
 
 }
 
@@ -89,18 +90,17 @@ Team.prototype.initializeTeam = function() {
 };
 
 Team.prototype.startNewTeam = function() {
-  if (this.menu) {
     inquirer
     .prompt({
       type: 'list',
       message: 'What would you like to add an employee or finsih building team?',
       name: 'action',
-      choices: ['add an engineer', 'add an intern', 'finish building my team']
+      choices: ['add an engineer', 'add an intern', 'finish building my team'],
     })
     .then(({ action }) => {
       if (action === 'finish building my team') {
         
-        const pageHTML = generatePage();
+        const pageHTML = generatePage(team);
           fs.writeFile('./dist/index.html',pageHTML, err =>{
               if (err) {
                   console.log('There was a problem creating file');
@@ -185,12 +185,27 @@ Team.prototype.employeeData = function(action) {
       when: isIntern(action),
     },
   ])
-  .then(({ name, id, email, github, school }) => {
+  .then(({ name, id, email,  github, school }) => {
     this.engineer = new Engineer(name, id, email, github);
     this.intern = new Intern(name, id, email, school);
+
+    let employee = {};
+        switch(action){
+            case 'Manager': 
+              employee = new Manager(name,id,email,officeNumber);
+              break;
+            case 'Engineer':
+                employee = new Engineer(name,id,email,github);
+                break;
+            case 'Intern':
+                employee = new Intern(name,id,email,school);
+                break;      
+        }
+        team.push(team);
+        employeeAction();
 
     //get employee data
   }); 
 }
 
-new Team().initializeTeam();
+initializeTeam();
