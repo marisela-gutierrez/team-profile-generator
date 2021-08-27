@@ -1,196 +1,148 @@
-const inquirer = require('inquirer');
-const Engineer = require('./lib/Engineer');
-const Intern = require('./lib/intern');
-const Manager = require('./lib/Manager');
+const inquirer = require("inquirer");
 const fs = require("fs");
 const generatePage = require("./src/page-template");
-let team = [];
+const Manager = require("./lib/Manager");
+const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/Intern");
+let employees = [];
 
-const isEngineer = (action) => {
-  if(action === 'add an engineer'){
-      return true;
-  }
-  return false;
+const validateEmail = (input) => {
+    if (input.includes('@')){
+        return true;
+    }
+    console.log('\nPlease enter a valid email address!');
+    return false;
 }
 
-const isIntern = (action) => {
-  if(action === 'add an intern'){
-      return true;
-  }
-  return false;
+const isManager = (type) => {
+    if(type === 'Manager'){
+        return true;
+    }
+    return false;
 }
 
-function Team() {
-  this.manager;
-  this.engineer;
-  this.intern;
-
+const isEngineer = (type) => {
+    if(type === 'Engineer'){
+        return true;
+    }
+    return false;
 }
 
-Team.prototype.initializeTeam = function() {
-  inquirer.prompt([
-    {
-      type: 'input',
-      name: 'managerName',
-      message: 'What is your name? (Required)',
-      validate: managerNameInput => {
-        if (managerNameInput) {
-          return true;
-        } else {
-          console.log('Please enter your name!');
-          return false;
-        }
-      }
-    },
-    {
-      type: 'input',
-      name: 'managerId',
-      message: 'Enter your employee ID (Required)',
-      validate: managerId => {
-        if (managerId) {
-          return true;
-        } else {
-          console.log('Please enter your employee ID');
-          return false;
-        }
-      }
-    },
-    {
-      type: 'input',
-      name: 'managerEmail',
-      message: 'Enter your email address (Required)',
-      validate: managerEmail => {
-        if (managerEmail) {
-          return true;
-        } else {
-          console.log('Please enter your email address!');
-          return false;
-        }
-      }
-    },
-    {
-      type: 'input',
-      name: 'managerOffice',
-      message: 'Enter your office number (Required)',
-      validate: managerOffice => {
-        if (managerOffice) {
-          return true;
-        } else {
-          console.log('Please enter your office number!');
-          return false;
-        }
-      }
-    },
-  ])
-  .then(({ managerName, managerId, managerEmail, managerOffice }) => {
-    this.manager = new Manager(managerName, managerId, managerEmail, managerOffice);
+const isIntern = (type) => {
+    if(type === 'Intern'){
+        return true;
+    }
+    return false;
+}
 
-    this.startNewTeam();
- }); 
-};
-
-Team.prototype.startNewTeam = function() {
-    inquirer
-    .prompt({
-      type: 'list',
-      message: 'What would you like to add an employee or finsih building team?',
-      name: 'action',
-      choices: ['add an engineer', 'add an intern', 'finish building my team'],
-    })
-    .then(({ action }) => {
-      if (action === 'finish building my team') {
-        
-        const pageHTML = generatePage(team);
+const employeeType = () => {
+    inquirer.prompt({
+        type: "list",
+        name: "type",
+        message:  "Please choose type of employee you would like to add, or are you finished building your team profile?",
+        choices: ["Engineer","Intern","Finished"],
+    }).then(({type}) => {
+      if (type === 'Finished'){
+          const pageHTML = generatePage(employees);
           fs.writeFile('./dist/index.html',pageHTML, err =>{
               if (err) {
-                  console.log('There was a problem creating file');
+                  console.log('There was an issue creating the file');
               } else {
-                  console.log('Team profile has been created, file located in the dist folder');
+                  console.log('Team profile has been created, you will find your file in the dist folder');
               }
           })
       } else {
-          this.employeeData(action);
+          employeeInfo(type);
       }
     });
-};
+}
 
-Team.prototype.employeeData = function(action) {
+const employeeInfo = (type) => {
 
-  inquirer.prompt([
-    {
-      type: 'input',
-      name: 'name',
-      message: `Enter ${action}'s name!`,
-      validate: nameInput => {
-        if (nameInput) {
-          return true;
-        } else {
-          console.log('Please enter name!');
-          return false;
-        }
-      }
-    },
-    {
-      type: 'input',
-      name: 'id',
-      message: `Enter ${action}'s employee Id!`,
-      validate: idInput => {
-        if (idInput) {
-          return true;
-        } else {
-          console.log('Please enter employee ID');
-          return false;
-        }
-      }
-    },
-    {
-      type: 'input',
-      name: 'email',
-      message: `Enter ${action}'s email address!`,
-      validate: emailInput => {
-        if (emailInput) {
-          return true;
-        } else {
-          console.log('Please enter email address!');
-          return false;
-        }
-      }
-    },
-    {
-      type: 'input',
-      name: 'github',
-      message: `What is the ${action}'s github?`,
-      validate: githubInput => {
-        if (githubInput) {
-          return true;
-        } else {
-          console.log('Please enter github!');
-          return false;
+    console.log(`
+    ==========================
+    Add a(n) ${type}
+    ==========================
+    `);
+
+    inquirer.prompt([
+      {
+        type: "input",
+        name: "name",
+        message: `What is the ${type}'s name:`,
+        validate: nameInput => {
+            if (nameInput){
+                return true;
+            } else {
+                console.log('\nPlease enter a name!');
+                return false;
+            }
         }
       },
-      when: isEngineer(action),
-    },
-    {
-      type: 'input',
-      name: 'school',
-      message: `What is the ${action}'s school name?`,
-      validate: schoolInput => {
-        if (schoolInput) {
-          return true;
-        } else {
-          console.log('Please enter school!');
-          return false;
+      {
+        type: "input",
+        name: "id",
+        message: `What is the ${type}'s employee ID:`,
+        validate: nameInput => {
+            if (nameInput){
+                return true;
+            } else {
+                console.log("\nPlease enter an ID number!");
+                return false;
+            }
         }
       },
-      when: isIntern(action),
-    },
-  ])
-  .then(({ name, id, email,  github, school }) => {
-    this.engineer = new Engineer(name, id, email, github);
-    this.intern = new Intern(name, id, email, school);
-
-    let employee = {};
-        switch(action){
+      {
+        type: "input",
+        name: "email",
+        message: `What is the ${type}'s email:`,
+        validate: validateEmail,
+      },
+      {
+        type: "input",
+        name: "officeNumber",
+        message: `What is the ${type}'s office number:`,
+        validate: nameInput => {
+            if (nameInput){
+                return true;
+            } else {
+                console.log("\nPlease enter a phone number!");
+                return false;
+            }
+        },
+        when: isManager(type),
+      },
+      {
+        type: "input",
+        name: "github",
+        message: `What is the ${type}'s GitHub username:`,
+        validate: nameInput => {
+            if (nameInput){
+                return true;
+            } else {
+                console.log("\nPlease enter a username!");
+                return false;
+            }
+        },
+        when: isEngineer(type),
+      },
+      {
+        type: "input",
+        name: "school",
+        message: `What is the ${type}'s school name:`,
+        validate: nameInput => {
+            if (nameInput){
+                return true;
+            } else {
+                console.log("\nPlease enter a school!");
+                return false;
+            }
+        },
+        when: isIntern(type),
+      },
+    ]).then(({name,id,email,officeNumber,github,school}) => {
+        let employee = {};
+        switch(type){
             case 'Manager': 
               employee = new Manager(name,id,email,officeNumber);
               break;
@@ -201,11 +153,9 @@ Team.prototype.employeeData = function(action) {
                 employee = new Intern(name,id,email,school);
                 break;      
         }
-        team.push(team);
-        employeeAction();
-
-    //get employee data
-  }); 
+        employees.push(employee);
+        employeeType();
+    });
 }
 
-initializeTeam();
+employeeInfo('Manager');

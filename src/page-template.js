@@ -1,68 +1,68 @@
-const teamCards = (team) => {
-  let teamInfo = "";
-  let unique = "";
-  team.forEach((employee) => {
-    teamInfo += `<div class = "card col-md-3 m-3 p-0">
+const generateEmployeeCards = (employees) => {
+  let cardsHtml = "";
+  let third = "";
+  employees.forEach((employee) => {
+    cardsHtml += `<div class = "card col-md-3 m-3 p-0">
         <div class = "card-header bg-primary">`;
-    teamInfo += employee.getName();
+    cardsHtml += employee.getName();
     switch (employee.getRole()) {
       case "manager":
-        teamInfo +=
-          '<h6 class="card-subtitle mb-2 "><i class="fas fa-mug-hot"> Manager</i></h6>';
-        unique = employee.getNumber();
+        cardsHtml +=
+          '<h2 class="card-subtitle"><i class="bi bi-door-open"></i> Manager</h2>';
+        third = employee.getOfficeNumber();
         break;
       case "engineer":
-        teamInfo += `<h6 class="card-subtitle mb-2 "><i class="fas fa-glasses"> Engineer</i></h6>`;
-        unique = employee.getGithub();
+        cardsHtml += `<h2 class="card-subtitle"><i class="bi bi-eyeglasses"></i></i> Engineer</h2>`;
+        third = employee.getGithub();
         break;
       case "intern":
-        teamInfo +=
-          '<h6 class="card-subtitle mb-2 "><i class="fas fa-user-graduate"> Intern</i></h6>';
-        unique = employee.getSchool();
+        cardsHtml +=
+          '<h2 class="card-subtitle"><i class="bi bi-book"></i> Intern</h2>';
+        third = employee.getSchool();
         break;
     }
-    teamInfo += `</div>
+    cardsHtml += `</div>
         <ul class="list-group list-group-flush">
         `;
-    teamInfo += employee.getId();
-    teamInfo += employee.getEmail();
-    teamInfo += unique;
-    teamInfo += `</div>`;
+    cardsHtml += employee.getId();
+    cardsHtml += employee.getEmail();
+    cardsHtml += third;
+    cardsHtml += `</div>`;
   });
-  return teamInfo;
+  return cardsHtml;
 };
 
-const generatePage = (team) => {
+const generatePage = (employees) => {
   return `
-  <!DOCTYPE html>
-  <html lang="en">
-
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Team Profile</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"></link>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-  </head>
-
-  <body>
-    <header>
-      <h1 class="d-block text-center p-5 bg-danger text-white">My Team</h1>
-
-    </header>
-
-    <section>
-
-      <div class="container mt-5 mr-3">
-        <div class="row">
-          ${teamCards(team)}
-        </div>   
-       </div>
-    </section>
-    
-  </body>
-  </html>
+<!DOCTYPE html> 
+<html lang="en"> 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Portfolio Demo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+</head>
+<body>
+<header>
+<div class="px-3 py-2 bg-dark text-white">
+      <div class="container">
+        <div class="align-items-center justify-content-center">
+          <h1>My Team</h1>      
+        </div>
+      </div>
+    </div>
+</header>
+<main>
+  <div class = "container">
+    <div class = "row">
+      ${generateEmployeeCards(employees)}
+    </div>
+  </div>
+</main>
+</body>
+</html>
 `;
 };
 
